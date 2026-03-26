@@ -1,1 +1,178 @@
-<!-- Setting content -->
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finance Tracker</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+
+/*  BASE COLORS  */
+:root {
+  --accent: #006699;
+  --inactive: #333;
+  --dim: #666;
+  --border: #ddd;
+  --white: #fff;
+  --warm: #fffded;
+  --warm2: #ffecce;
+}
+
+.dark-mode {
+  --accent: #4499ea;
+  --inactive: #666;
+  --dim: #c33;
+  --border: #333;
+  --white: #111;
+  --warm: #222;
+  --warm2: #333;
+}
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: 'Inter', sans-serif;
+  background: var(--white);
+  color: var(--inactive);
+}
+
+input[type="text"], input[type="number"], select, textarea {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+}
+
+button {
+  cursor: pointer;
+}
+
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+	
+.header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 15px;
+	border-bottom: 1px solid var(--border);
+}
+
+.main {
+	display: grid;
+	grid-template-columns: 150px 1fr;
+	gap: 20px;
+	padding: 20px;
+}
+
+.main {
+	min-height: calc(100vh - 100px);
+}
+
+.sb-item {
+	cursor: pointer;
+	padding: 10px 12px;
+	border-radius: 6px;
+	transition: all 0.2s;
+}
+
+.sb-item:hover {
+	background: var(--warm);
+}
+
+.sb-item.active {
+	background: var(--accent);
+	color: white;
+}
+
+.content {
+	display: none;
+}
+
+.content.active {
+	display: block;
+	animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 15px;
+}
+
+
+
+
+#timeline-core {
+	max-height: 70%;
+  overflow-y: auto;
+}
+
+.sb-container {
+  border-right: 1px solid var(--border);
+  padding-right: 10px;
+}
+
+.func-card, .goal-card, .budget-card {
+  border-left: 3px solid var(--accent);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.func-card, .goal-card, .budget-card {
+  border-left: 3px solid var(--accent);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.func-card { height: 120px; }
+
+.func-card.is-active {
+  border-left-color: #4499ea;
+  background: rgba(68, 158, 2, 0.1);
+}
+
+/* Colors for Timelines */
+.fin-timeline { background-color: rgba(201, 255, 51, 0.15); color: var(--accent); }
+.af-timeline { background-color: rgba(122, 0, 196, 0.06); color: #7a00c4; }
+.hr-timeline { background-color: rgba(249, 115, 22, 0.08); color: #c46000; }
+.sales-timeline { background-color: rgba(176, 120, 0, 0.08); color: var(--yellow); }
+.prod-timeline { background-color: rgba(0, 112, 136, 0.08); color: #007088; }
+.all-timeline { background-color: rgba(0, 0, 0, 0.04); color: var(--dim); }
+.highlight td { background-color: rgba(201, 255, 51, 0.04); }
+.freq-mark { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.5px; color: var(--faint); padding: 2px 6px; border: 1px solid var(--border-light); border-radius: 3px; }
+
+/* FUNC GRID */
+.func-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+.func-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 18px; transition: all 0.2s; }
+.func-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04); }
+.func-card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border-light); }
+.func-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.func-card-head h4 { font-size: 13px; font-weight: 600; }
+.func-flows { font-size: 11px; color: var(--dim); padding: 3px 0; display: flex; align-items: flex-start; gap: 5px; line-height: 1.5; }
+.func-flow .dir { font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+.dir.in { color: #007088; }
+.dir.out { color: var(--accent); }
+
+/* FOOTER */
+.page-footer { margin-left: var(--sidebar-w); max-width: 1100px; padding: 32px 48px; border-top: 1px solid var(--border); background: var(--warm); text-align: center; }
+.page-footer p { font-family: 'Cormorant Garamond', serif; font-size: 14px; color: var(--dim); }
+
+/* RESPONSIVE */
+@media(max-width: 900px) { .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); } .sb-toggle { display: flex; } .main { margin-left: 0; } .page-footer { margin-left: 0; } .cover h1 { font-size: 36px; } .cover, .sect { padding: 24px 16px; } .stats-row { padding: 12px 16px; } .period-bar { padding: 10px 16px; } .func-grid { grid-template-columns: 1fr; } .art-tbl { font-size: 11px; } .ch-div { padding: 28px 16px 0; } }
+@media print { .sidebar, .sb-toggle, .period-bar { display: none !important; } .main, .page-footer { margin-left: 0; } body::before { display: none; } }
+</style>
+</head>
+<body,m,a.workday);return d?fmt(y,m,d)+' ('+a.workday+'-й р.д.)':a.deadline}  if(a.freq==='annual')return MUK[a.month||12]+' '+y;  return a.deadline;}function depText(dep,y,m){  const r=dep.when.match(/р\.д\.\s*(\d+)/);  if(r){const d=wd(y,m,parseInt(r[1]));if(d)return dep.from+': '+dep.what+' → до '+fmt(y,m,d)}  return dep.from+': '+dep.what+' ('+dep.when+')';}}</script>
+</body>
+</html>
