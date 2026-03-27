@@ -3,176 +3,605 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Finance Tracker</title>
+<title>Finance Function — Трекер</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
 
-/*  BASE COLORS  */
-:root {
-  --accent: #006699;
-  --inactive: #333;
-  --dim: #666;
-  --border: #ddd;
-  --white: #fff;
-  --warm: #fffded;
-  --warm2: #ffecce;
+:root{
+  --lime:#C9FF33;--cream:#FAFAF5;--warm:#F0EDE6;--text:#111;--dim:#999;--faint:#ccc;
+  --border:#E6E2DB;--border-light:#F0EDE6;--white:#fff;--sidebar-w:240px;
+  --green:#2D8A4E;--green-bg:rgba(45,138,78,0.06);--yellow:#B07800;--yellow-bg:rgba(176,120,0,0.06);
+  --red:#C43434;--red-bg:rgba(196,52,52,0.06);--accent:#5a7a00;--purple:#7a00c4;
 }
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--cream);color:var(--text);font-family:'Inter',-apple-system,sans-serif;font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.3;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E")}
 
-.dark-mode {
-  --accent: #4499ea;
-  --inactive: #666;
-  --dim: #c33;
-  --border: #333;
-  --white: #111;
-  --warm: #222;
-  --warm2: #333;
-}
+/* SIDEBAR */
+.sidebar{position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;overflow-y:auto;background:rgba(250,250,245,.97);backdrop-filter:blur(24px);border-right:1px solid var(--border);padding:20px 0;z-index:1000;transition:transform .3s}
+.sb-brand{padding:0 20px 16px;border-bottom:1px solid var(--border);margin-bottom:12px}
+.sb-brand-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500}
+.sb-brand-sub{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-top:3px}
+.sb-progress{margin:12px 20px;padding:12px;background:var(--white);border:1px solid var(--border);border-radius:10px}
+.sb-progress-title{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin-bottom:6px;font-weight:600}
+.sb-pbar{width:100%;height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:4px}
+.sb-pfill{height:100%;background:var(--accent);border-radius:2px;transition:width .5s}
+.sb-ptxt{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim)}
+.sb-stitle{padding:12px 20px 4px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--faint);font-weight:600}
+.sb-item{display:block;padding:6px 20px;font-size:12px;font-weight:500;color:var(--dim);text-decoration:none;border-left:2px solid transparent;cursor:pointer;transition:all .15s}
+.sb-item:hover{color:var(--text);background:rgba(0,0,0,.02)}
+.sb-item.active{color:var(--text);border-left-color:var(--lime);background:rgba(201,255,51,.04)}
+.sb-item .n{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);margin-right:6px}
+.sb-toggle{display:none;position:fixed;top:12px;left:12px;z-index:1001;width:36px;height:36px;background:rgba(250,250,245,.95);border:1px solid var(--border);border-radius:8px;cursor:pointer;align-items:center;justify-content:center;font-size:18px;color:var(--text)}
 
+/* MAIN */
+.main{margin-left:var(--sidebar-w);max-width:1100px}
+.main>section{border-bottom:1px solid var(--border)}
+.main>section:last-child{border-bottom:none}
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* COVER */
+.cover{padding:70px 48px 40px}
+.cover-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--accent);margin-bottom:18px;font-weight:600}
+.cover h1{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:300;letter-spacing:-2px;line-height:1.05;margin-bottom:14px}
+.cover h1 .ac{color:var(--accent);font-weight:500}
+.cover-sub{font-size:15px;color:var(--dim);max-width:600px;line-height:1.7;margin-bottom:32px;font-weight:300}
+.cover-meta{display:flex;gap:48px;font-size:13px;color:var(--dim);border-top:1px solid var(--border);padding-top:20px}
+.cover-meta strong{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text);font-weight:600;margin-bottom:3px}
 
-html {
-  font-family: 'Inter', sans-serif;
-  background: var(--white);
-  color: var(--inactive);
-}
+/* PERIOD PICKER */
+.period-bar{display:flex;align-items:center;gap:12px;padding:14px 48px;background:var(--warm);border-bottom:1px solid var(--border);flex-wrap:wrap;position:sticky;top:0;z-index:50;backdrop-filter:blur(16px)}
+.period-bar label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);font-weight:600}
+.period-bar select,.period-bar input[type=month]{background:var(--white);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-family:'Inter',sans-serif;font-size:13px;cursor:pointer}
+.period-bar select:focus,.period-bar input:focus{outline:none;border-color:var(--accent)}
+.period-nav{display:flex;gap:4px;margin-left:auto}
+.period-nav button{width:32px;height:32px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--dim);cursor:pointer;font-size:14px;transition:all .15s}
+.period-nav button:hover{background:var(--cream);color:var(--text)}
 
-input[type="text"], input[type="number"], select, textarea {
-  font-family: 'Inter', sans-serif;
-  font-size: 16px;
-}
+/* STATS */
+.stats-row{display:flex;gap:10px;padding:16px 48px;flex-wrap:wrap}
+.stat-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 18px;flex:1;min-width:100px;text-align:center;cursor:pointer;transition:all .2s;position:relative}
+.stat-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.04);transform:translateY(-1px)}
+.stat-card.active{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:500;line-height:1}
+.stat-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);margin-top:3px;font-weight:600}
+.stat-expand{display:none;position:absolute;top:100%;left:-1px;right:-1px;background:var(--white);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;z-index:20;max-height:240px;overflow-y:auto;text-align:left;box-shadow:0 8px 24px rgba(0,0,0,.06)}
+.stat-card.expanded .stat-expand{display:block}
+.stat-expand-item{padding:6px 14px;font-size:11px;color:var(--dim);border-bottom:1px solid var(--border-light);display:flex;justify-content:space-between;gap:8px}
+.stat-expand-item:last-child{border-bottom:none}
+.stat-expand-item .se-name{font-weight:500;color:var(--text)}
+.stat-expand-item .se-goal{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--faint)}
 
-button {
-  cursor: pointer;
-}
+/* CHAPTER */
+.ch-div{padding:40px 48px 0;position:relative}
+.ch-div .cd-num{font-family:'Cormorant Garamond',serif;font-size:100px;font-weight:300;color:var(--border);line-height:1;position:absolute;right:48px;top:20px;opacity:.5}
+.ch-div .cd-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.ch-div .cd-title{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:400;letter-spacing:-.5px;margin-bottom:4px}
+.ch-div .cd-sub{font-size:13px;color:var(--dim);margin-bottom:20px;max-width:600px;line-height:1.7}
 
+/* SECT */
+.sect{padding:32px 48px 48px}
 
-a {
-  color: var(--accent);
-  text-decoration: none;
-}
-	
-.header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	gap: 10px;
-	padding: 10px 15px;
-	border-bottom: 1px solid var(--border);
-}
+/* INSIGHT */
+.insight{background:var(--white);padding:24px 28px;margin:16px 0 24px;border:1px solid var(--border);border-left:3px solid var(--lime);border-radius:12px}
+.insight h3{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:8px;font-weight:600}
+.insight p{font-family:'Cormorant Garamond',serif;font-size:17px;line-height:1.6;color:var(--text)}
+.insight p strong{color:var(--accent);font-weight:600}
 
-.main {
-	display: grid;
-	grid-template-columns: 150px 1fr;
-	gap: 20px;
-	padding: 20px;
-}
+/* GOAL CARD */
+.goal-card{background:var(--white);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:box-shadow .2s}
+.goal-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.04)}
+.goal-hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;cursor:pointer;user-select:none;gap:14px}
+.goal-left{display:flex;align-items:center;gap:14px;flex:1;min-width:0}
+.goal-badge{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1px;padding:5px 10px;border-radius:8px;white-space:nowrap}
+.goal-title{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:500}
+.new-tag{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:#a0005a;background:rgba(255,39,161,.08);border:1px solid rgba(255,39,161,.15);padding:2px 6px;border-radius:4px;font-weight:700;margin-left:8px;vertical-align:middle}
+.goal-right{display:flex;align-items:center;gap:14px;flex-shrink:0}
+.goal-pbar{width:90px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.goal-pfill{height:100%;border-radius:2px;transition:width .4s}
+.goal-pct{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;min-width:32px;text-align:right}
+.goal-chev{font-size:11px;color:var(--faint);transition:transform .2s}
+.goal-card.open .goal-chev{transform:rotate(180deg)}
+.goal-body{display:none;border-top:1px solid var(--border)}
+.goal-card.open .goal-body{display:block}
 
-.main {
-	min-height: calc(100vh - 100px);
-}
+/* GOAL DESC + OUTPUTS MERGED */
+.goal-info{padding:16px 22px;background:var(--cream);border-bottom:1px solid var(--border);display:flex;gap:32px;flex-wrap:wrap}
+.goal-info-desc{flex:1;min-width:260px;font-size:13px;color:var(--dim);line-height:1.7}
+.goal-info-out{flex:1;min-width:260px}
+.goal-info-out-title{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:6px;font-weight:600}
+.goal-info-out-item{font-size:12px;color:var(--dim);padding:2px 0;display:flex;gap:5px}
+.goal-info-out-item .arr{color:var(--accent);flex-shrink:0}
 
-.sb-item {
-	cursor: pointer;
-	padding: 10px 12px;
-	border-radius: 6px;
-	transition: all 0.2s;
-}
+/* ART TABLE */
+.art-tbl{width:100%;border-collapse:separate;border-spacing:0;font-size:12px}
+.art-tbl th{background:var(--warm);font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dim);text-align:left;padding:8px 12px;border-bottom:1px solid var(--border);position:sticky;top:0}
+.art-tbl td{padding:10px 12px;border-bottom:1px solid var(--border-light);vertical-align:top}
+.art-tbl tbody tr:last-child td{border-bottom:none}
+.art-tbl tbody tr:hover td{background:var(--cream)}
+.art-name{font-weight:600;color:var(--text);font-size:12px}
+.deadline{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);white-space:nowrap}
+.consumers{font-size:11px;color:var(--dim)}
+.dep-list{display:flex;flex-direction:column;gap:1px}
+.dep-chip{font-size:10px;color:var(--dim);display:flex;align-items:flex-start;gap:3px}
+.dep-chip .arr{color:var(--accent);font-weight:700;flex-shrink:0}
+.dep-chip strong{color:var(--text);font-weight:600}
 
-.sb-item:hover {
-	background: var(--warm);
-}
+/* STATUS CELL */
+.status-cell{min-width:160px}
+.status-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.status-sel{appearance:none;-webkit-appearance:none;border:1px solid var(--border);border-radius:5px;padding:4px 22px 4px 8px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;cursor:pointer;outline:none;transition:all .15s;background-repeat:no-repeat;background-position:right 5px center;background-size:10px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23999'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E")}
+.status-sel:hover{border-color:var(--dim)}
+.s-done{background-color:var(--green-bg);color:var(--green);border-color:rgba(45,138,78,.25)}
+.s-progress{background-color:var(--yellow-bg);color:var(--yellow);border-color:rgba(176,120,0,.25)}
+.s-waiting{background-color:rgba(122,0,196,.05);color:var(--purple);border-color:rgba(122,0,196,.2)}
+.s-pending{background-color:var(--white);color:var(--dim)}
+.s-overdue{background-color:var(--red-bg);color:var(--red);border-color:rgba(196,52,52,.25)}
+.s-na{background-color:var(--warm);color:var(--faint);opacity:.7}
 
-.sb-item.active {
-	background: var(--accent);
-	color: white;
-}
+/* DONE FIELDS */
+.done-fields{margin-top:6px;display:flex;flex-direction:column;gap:4px}
+.done-fields input{border:1px solid var(--border);border-radius:4px;padding:3px 8px;font-family:'Inter',sans-serif;font-size:11px;color:var(--text);background:var(--white);width:100%}
+.done-fields input:focus{outline:none;border-color:var(--accent)}
+.done-fields input::placeholder{color:var(--faint)}
+.link-row{display:flex;gap:4px;align-items:center}
+.link-row input{flex:1}
+.link-btn{font-size:11px;color:var(--accent);text-decoration:none;white-space:nowrap;font-weight:600;padding:3px 6px;border:1px solid rgba(90,122,0,.2);border-radius:4px;background:rgba(201,255,51,.06);cursor:pointer;transition:all .15s}
+.link-btn:hover{background:rgba(201,255,51,.15)}
 
-.content {
-	display: none;
-}
-
-.content.active {
-	display: block;
-	animation: fadeIn 0.5s;
-}
-
-@keyframes fadeIn {
-  from {opacity: 0;}
-  to {opacity: 1;}
-}
-
-.card {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 15px;
-}
-
-
-
-
-#timeline-core {
-	max-height: 70%;
-  overflow-y: auto;
-}
-
-.sb-container {
-  border-right: 1px solid var(--border);
-  padding-right: 10px;
-}
-
-.func-card, .goal-card, .budget-card {
-  border-left: 3px solid var(--accent);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.func-card, .goal-card, .budget-card {
-  border-left: 3px solid var(--accent);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.func-card { height: 120px; }
-
-.func-card.is-active {
-  border-left-color: #4499ea;
-  background: rgba(68, 158, 2, 0.1);
-}
-
-/* Colors for Timelines */
-.fin-timeline { background-color: rgba(201, 255, 51, 0.15); color: var(--accent); }
-.af-timeline { background-color: rgba(122, 0, 196, 0.06); color: #7a00c4; }
-.hr-timeline { background-color: rgba(249, 115, 22, 0.08); color: #c46000; }
-.sales-timeline { background-color: rgba(176, 120, 0, 0.08); color: var(--yellow); }
-.prod-timeline { background-color: rgba(0, 112, 136, 0.08); color: #007088; }
-.all-timeline { background-color: rgba(0, 0, 0, 0.04); color: var(--dim); }
-.highlight td { background-color: rgba(201, 255, 51, 0.04); }
-.freq-mark { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.5px; color: var(--faint); padding: 2px 6px; border: 1px solid var(--border-light); border-radius: 3px; }
+/* TIMELINE */
+.tl-table{width:100%;border-collapse:separate;border-spacing:0;background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.tl-table th{background:var(--warm);font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--dim);text-align:left;padding:8px 14px}
+.tl-table td{padding:8px 14px;font-size:12px;border-bottom:1px solid var(--border-light);vertical-align:top}
+.tl-table tbody tr:last-child td{border-bottom:none}
+.tl-table tbody tr:hover td{background:var(--cream)}
+.tl-day{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;white-space:nowrap}
+.tl-who{font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;white-space:nowrap}
+.tl-finance{background:rgba(201,255,51,.12);color:var(--accent)}
+.tl-af{background:rgba(122,0,196,.06);color:#7a00c4}
+.tl-hr{background:rgba(249,115,22,.08);color:#c46000}
+.tl-sales{background:rgba(176,120,0,.08);color:var(--yellow)}
+.tl-prod{background:rgba(0,112,136,.08);color:#007088}
+.tl-all{background:rgba(0,0,0,.04);color:var(--dim)}
+.tl-highlight td{background:rgba(201,255,51,.04)}
+.tl-freq{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.5px;color:var(--faint);padding:2px 6px;border:1px solid var(--border-light);border-radius:3px}
 
 /* FUNC GRID */
-.func-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
-.func-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 18px; transition: all 0.2s; }
-.func-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04); }
-.func-card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border-light); }
-.func-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-.func-card-head h4 { font-size: 13px; font-weight: 600; }
-.func-flows { font-size: 11px; color: var(--dim); padding: 3px 0; display: flex; align-items: flex-start; gap: 5px; line-height: 1.5; }
-.func-flow .dir { font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
-.dir.in { color: #007088; }
-.dir.out { color: var(--accent); }
+.func-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.func-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px;transition:all .2s}
+.func-card:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.04)}
+.func-card-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border-light)}
+.func-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.func-card-head h4{font-size:13px;font-weight:600}
+.func-flow{font-size:11px;color:var(--dim);padding:3px 0;display:flex;align-items:flex-start;gap:5px;line-height:1.5}
+.func-flow .dir{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;flex-shrink:0;margin-top:2px}
+.dir.in{color:#007088}
+.dir.out{color:var(--accent)}
 
 /* FOOTER */
-.page-footer { margin-left: var(--sidebar-w); max-width: 1100px; padding: 32px 48px; border-top: 1px solid var(--border); background: var(--warm); text-align: center; }
-.page-footer p { font-family: 'Cormorant Garamond', serif; font-size: 14px; color: var(--dim); }
+.page-footer{margin-left:var(--sidebar-w);max-width:1100px;padding:32px 48px;border-top:1px solid var(--border);background:var(--warm);text-align:center}
+.page-footer p{font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--dim)}
 
 /* RESPONSIVE */
-@media(max-width: 900px) { .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); } .sb-toggle { display: flex; } .main { margin-left: 0; } .page-footer { margin-left: 0; } .cover h1 { font-size: 36px; } .cover, .sect { padding: 24px 16px; } .stats-row { padding: 12px 16px; } .period-bar { padding: 10px 16px; } .func-grid { grid-template-columns: 1fr; } .art-tbl { font-size: 11px; } .ch-div { padding: 28px 16px 0; } }
-@media print { .sidebar, .sb-toggle, .period-bar { display: none !important; } .main, .page-footer { margin-left: 0; } body::before { display: none; } }
+@media(max-width:900px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.sb-toggle{display:flex}.main{margin-left:0}.page-footer{margin-left:0}.cover h1{font-size:36px}.cover,.sect{padding:24px 16px}.stats-row{padding:12px 16px}.period-bar{padding:10px 16px}.func-grid{grid-template-columns:1fr}.art-tbl{font-size:11px}.ch-div{padding:28px 16px 0}}
+@media print{.sidebar,.sb-toggle,.period-bar{display:none!important}.main,.page-footer{margin-left:0}body::before{display:none}}
 </style>
 </head>
-<body,m,a.workday);return d?fmt(y,m,d)+' ('+a.workday+'-й р.д.)':a.deadline}  if(a.freq==='annual')return MUK[a.month||12]+' '+y;  return a.deadline;}function depText(dep,y,m){  const r=dep.when.match(/р\.д\.\s*(\d+)/);  if(r){const d=wd(y,m,parseInt(r[1]));if(d)return dep.from+': '+dep.what+' → до '+fmt(y,m,d)}  return dep.from+': '+dep.what+' ('+dep.when+')';}}</script>
+<body>
+
+<!--
+╔══════════════════════════════════════════════════════════════╗
+║  НАЛАШТУВАННЯ — ВСТАВТЕ ВАШ URL МІЖ ЛАПОК НИЖЧЕ            ║
+╚══════════════════════════════════════════════════════════════╝
+-->
+<script>
+// ====== ВСТАВТЕ ВАШ GOOGLE APPS SCRIPT URL СЮДИ ======
+var APPS_SCRIPT_URL = 'https://script.google.com/a/macros/x-on-x.com/s/AKfycbxhpoPxublzRK_kxBvDgar6-FfPkbtJO0_4bgupv-ZFnshdbVsh4xYcpeQrQw2qf5rO/exec';
+// Приклад: var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/ABC123/exec';
+// =====================================================
+</script>
+
+<button class="sb-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+
+<nav class="sidebar">
+  <div class="sb-brand">
+    <div class="sb-brand-title">Фінансова функція</div>
+    <div class="sb-brand-sub">Консалтингова компанія</div>
+  </div>
+  <div class="sb-progress">
+    <div class="sb-progress-title" id="sb-period-label">—</div>
+    <div class="sb-pbar"><div class="sb-pfill" id="sb-fill"></div></div>
+    <div class="sb-ptxt" id="sb-ptxt">—</div>
+    <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
+      <div id="sync-badge" style="font-family:'JetBrains Mono',monospace;font-size:10px;margin-bottom:6px">🔸 Локально</div>
+      <button onclick="fullSync()" style="width:100%;padding:5px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--dim);font-size:11px;font-family:Inter,sans-serif;cursor:pointer;font-weight:600;transition:all .15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--dim)'">↑ Синхронізувати з Google Sheets</button>
+    </div>
+  </div>
+  <div class="sb-stitle">Розділи</div>
+  <a class="sb-item active" href="#cover"><span class="n">00</span>Місія</a>
+  <a class="sb-item" href="#goals"><span class="n">01</span>Цілі та трекінг</a>
+  <a class="sb-item" href="#timeline"><span class="n">02</span>Таймлайн</a>
+  <a class="sb-item" href="#functions"><span class="n">03</span>Взаємодія</a>
+  <a class="sb-item" href="#accounting"><span class="n">04</span>Accounting (AF)</a>
+  <div class="sb-stitle" style="margin-top:16px">Цілі</div>
+  <a class="sb-item" href="#g1"><span class="n">2.1</span>Аналітика</a>
+  <a class="sb-item" href="#g2"><span class="n">2.2</span>Стабільність</a>
+  <a class="sb-item" href="#g3"><span class="n">2.3</span>Ресурси</a>
+  <a class="sb-item" href="#g4"><span class="n">2.4</span>Ризики</a>
+  <a class="sb-item" href="#g5"><span class="n">2.5</span>Ціноутворення</a>
+  <a class="sb-item" href="#g6"><span class="n">2.6</span>Дебіторка</a>
+</nav>
+
+<div class="main">
+
+<section id="cover">
+  <div class="cover">
+    <div class="cover-label">Finance Function</div>
+    <h1>Фінансова <span class="ac">функція</span></h1>
+    <p class="cover-sub">Опис функції, цілей, артефактів та процесів взаємодії. Трекінг виконання з прив'язкою до періодів.</p>
+    <div class="cover-meta">
+      <div><strong>Роль</strong>Стратегія та майбутнє</div>
+      <div><strong>Пара</strong>Accounting (AF) = факти</div>
+      <div><strong>Юрисдикції</strong>US · UK · UA</div>
+    </div>
+  </div>
+</section>
+
+<!-- PERIOD PICKER -->
+<div class="period-bar">
+  <label>Режим:</label>
+  <select id="period-mode" onchange="onModeChange()">
+    <option value="month">Місяць</option>
+    <option value="quarter">Квартал</option>
+    <option value="year">Рік</option>
+  </select>
+  <span id="pick-month-wrap">
+    <label>Місяць:</label>
+    <select id="month-pick">
+      <option value="1">Січень</option><option value="2">Лютий</option><option value="3">Березень</option>
+      <option value="4">Квітень</option><option value="5">Травень</option><option value="6">Червень</option>
+      <option value="7">Липень</option><option value="8">Серпень</option><option value="9">Вересень</option>
+      <option value="10">Жовтень</option><option value="11">Листопад</option><option value="12">Грудень</option>
+    </select>
+    <label>Рік:</label>
+    <select id="my-pick"></select>
+  </span>
+  <span id="pick-quarter-wrap" style="display:none">
+    <label>Квартал:</label>
+    <select id="q-pick"><option value="1">Q1</option><option value="2">Q2</option><option value="3">Q3</option><option value="4">Q4</option></select>
+    <label>Рік:</label>
+    <select id="qy-pick"></select>
+  </span>
+  <span id="pick-year-wrap" style="display:none">
+    <label>Рік:</label>
+    <select id="y-pick"></select>
+  </span>
+  <div class="period-nav">
+    <button onclick="shiftPeriod(-1)">◀</button>
+    <button onclick="setToday()">Сьогодні</button>
+    <button onclick="shiftPeriod(1)">▶</button>
+  </div>
+  <div style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--accent)" id="period-display"></div>
+</div>
+
+<!-- STATS -->
+<div class="stats-row" id="stats-row"></div>
+
+<!-- GOALS -->
+<section id="goals">
+  <div class="ch-div">
+    <div class="cd-num">01</div>
+    <div class="cd-label">Розділ перший</div>
+    <div class="cd-title">Цілі, артефакти та трекінг</div>
+    <div class="cd-sub">Шість цілей з артефактами, дедлайнами та залежностями. Статус і прогрес відображаються для обраного періоду.</div>
+  </div>
+  <div class="sect" id="goals-container"></div>
+</section>
+
+<!-- TIMELINE -->
+<section id="timeline">
+  <div class="ch-div">
+    <div class="cd-num">02</div>
+    <div class="cd-label">Розділ другий</div>
+    <div class="cd-title">Таймлайн</div>
+    <div class="cd-sub">Ланцюжок залежностей та артефактів для обраного періоду.</div>
+  </div>
+  <div class="sect">
+    <div style="margin-bottom:16px;display:flex;gap:6px;flex-wrap:wrap" id="tl-filters"></div>
+    <div id="tl-container"></div>
+  </div>
+</section>
+
+<!-- FUNCTIONS -->
+<section id="functions">
+  <div class="ch-div">
+    <div class="cd-num">03</div>
+    <div class="cd-label">Розділ третій</div>
+    <div class="cd-title">Взаємодія з функціями</div>
+    <div class="cd-sub">Вхідні та вихідні потоки даних між Finance та іншими функціями.</div>
+  </div>
+  <div class="sect"><div class="func-grid" id="func-grid"></div></div>
+</section>
+
+<!-- ACCOUNTING -->
+<section id="accounting">
+  <div class="ch-div">
+    <div class="cd-num">04</div>
+    <div class="cd-label">Розділ четвертий</div>
+    <div class="cd-title">Accounting Function (AF)</div>
+    <div class="cd-sub">AF відповідає за факти, звітність і виконання. Координує роботу з зовнішніми бухгалтерами (US, UK, UA).</div>
+  </div>
+  <div class="sect">
+    <table class="tl-table">
+      <thead><tr><th>Результат</th><th>Що робити</th><th>Дедлайн</th><th>Від кого</th><th>Кому</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Точна звітність</strong></td><td>Звіти для Finance та зовнішніх бухгалтерів</td><td class="deadline">До 3-го р.д.</td><td>HR — зарплати</td><td>Finance — P&L US/UK/UA</td></tr>
+        <tr><td><strong>Податкова відповідність</strong></td><td>Відповідність US, UK, UA</td><td class="deadline">За календарем</td><td>Зовн. бухгалтери, Legal</td><td>Directors — статус</td></tr>
+        <tr><td><strong>Своєчасні виплати</strong></td><td>Виплати підрядникам</td><td class="deadline">1-го та 15-го</td><td>HR, Finance, Production</td><td>HR — підтвердження</td></tr>
+        <tr><td><strong>Контроль витрат</strong></td><td>Відстежувати витрати, звіряти банк</td><td class="deadline">Щоденно</td><td>Finance, Projecting</td><td>Finance — факт. дані</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+</div>
+
+<div class="page-footer"><p>Фінансова функція · Консалтингова компанія</p></div>
+
+<script>
+const GD='https://drive.google.com/drive/folders/';
+const GDF={pnl:GD+'YOUR_PNL_FOLDER_ID',cashflow:GD+'YOUR_CF_FOLDER_ID',cph:GD+'YOUR_CPH_FOLDER_ID',package:GD+'YOUR_PKG_FOLDER_ID',budget_annual:GD+'YOUR_BUDGET_FOLDER_ID',projections:GD+'YOUR_PROJ_FOLDER_ID',plan_fact:GD+'YOUR_PF_FOLDER_ID',budget_projects:GD+'YOUR_BPROJ_FOLDER_ID',subscriptions:GD+'YOUR_SUB_FOLDER_ID',budget_functions:GD+'YOUR_BFUNC_FOLDER_ID',scenarios:GD+'YOUR_SCEN_FOLDER_ID',strategy:GD+'YOUR_STRAT_FOLDER_ID',dso:GD+'YOUR_DSO_FOLDER_ID',aging:GD+'YOUR_AGING_FOLDER_ID',reserves:GD+'YOUR_RES_FOLDER_ID',ratecard:GD+'YOUR_RC_FOLDER_ID',pricing:GD+'YOUR_PRICING_FOLDER_ID',receivables:GD+'YOUR_RECV_FOLDER_ID',roi:GD+'YOUR_ROI_FOLDER_ID',marketing:GD+'YOUR_MKTG_FOLDER_ID'};
+
+const MUK=['','Січень','Лютий','Березень','Квітень','Травень','Червень','Липень','Серпень','Вересень','Жовтень','Листопад','Грудень'];
+const FL={monthly:'Щомісячно',quarterly:'Щоквартально',semi:'Піврічно',annual:'Річно',weekly:'Щотижнево',event:'За подією'};
+
+function wd(y,m,n){let c=0;for(let d=1;d<=31;d++){const dt=new Date(y,m-1,d);if(dt.getMonth()!==m-1)break;if(dt.getDay()!==0&&dt.getDay()!==6){c++;if(c===n)return d}}return null}
+function fmt(y,m,d){return `${d}.${String(m).padStart(2,'0')}.${y}`}
+function mondays(y,m){const r=[];for(let d=1;d<=31;d++){const dt=new Date(y,m-1,d);if(dt.getMonth()!==m-1)break;if(dt.getDay()===1)r.push(d)}return r}
+function qOf(m){return Math.ceil(m/3)}
+function qMs(q){return[(q-1)*3+1,(q-1)*3+2,(q-1)*3+3]}
+
+function deadlineText(a,y,m){
+  if(a.freq==='event')return a.deadline;
+  if(a.freq==='weekly'){const ms=mondays(y,m);return 'Пн: '+ms.map(d=>fmt(y,m,d)).join(', ')}
+  if(a.workday){const d=wd(y,m,a.workday);return d?fmt(y,m,d)+' ('+a.workday+'-й р.д.)':a.deadline}
+  if(a.freq==='annual')return MUK[a.month||12]+' '+y;
+  return a.deadline;
+}
+function depText(dep,y,m){
+  const r=dep.when.match(/р\.д\.\s*(\d+)/);
+  if(r){const d=wd(y,m,parseInt(r[1]));if(d)return dep.from+': '+dep.what+' → до '+fmt(y,m,d)}
+  return dep.from+': '+dep.what+' ('+dep.when+')';
+}
+function inMonth(a,m){
+  if(a.freq==='monthly'||a.freq==='weekly'||a.freq==='event')return true;
+  if(a.freq==='quarterly')return[3,6,9,12].includes(m);
+  if(a.freq==='semi')return(a.months||[1,7]).includes(m);
+  if(a.freq==='annual')return(a.month||12)===m;
+  return true;
+}
+function countsForPct(a){return a.freq!=='event'}
+
+// PERIOD
+let mode='month',cY=new Date().getFullYear(),cM=new Date().getMonth()+1,cQ=qOf(cM);
+function pMonths(){if(mode==='month')return[cM];if(mode==='quarter')return qMs(cQ);return[1,2,3,4,5,6,7,8,9,10,11,12]}
+function populateYears(){const n=new Date().getFullYear();['qy-pick','y-pick','my-pick'].forEach(id=>{const s=document.getElementById(id);s.innerHTML='';for(let y=n-2;y<=n+2;y++){const o=document.createElement('option');o.value=y;o.textContent=y;if(y===cY)o.selected=true;s.appendChild(o)}})}
+populateYears();
+const mP=document.getElementById('month-pick');
+const myP=document.getElementById('my-pick');
+mP.value=cM;
+myP.value=cY;
+document.getElementById('q-pick').value=cQ;
+
+function sync(){
+  mP.value=cM;
+  myP.value=cY;
+  document.getElementById('q-pick').value=cQ;
+  document.getElementById('qy-pick').value=cY;
+  document.getElementById('y-pick').value=cY;
+  const d=document.getElementById('period-display');
+  if(mode==='month')d.textContent=MUK[cM]+' '+cY;
+  else if(mode==='quarter')d.textContent='Q'+cQ+' '+cY+' ('+MUK[qMs(cQ)[0]]+'–'+MUK[qMs(cQ)[2]]+')';
+  else d.textContent=String(cY);
+  document.getElementById('sb-period-label').textContent=d.textContent;
+}
+function onModeChange(){
+  mode=document.getElementById('period-mode').value;
+  document.getElementById('pick-month-wrap').style.display=mode==='month'?'':'none';
+  document.getElementById('pick-quarter-wrap').style.display=mode==='quarter'?'':'none';
+  document.getElementById('pick-year-wrap').style.display=mode==='year'?'':'none';
+  sync();render();
+}
+mP.addEventListener('change',()=>{cM=+mP.value;cQ=qOf(cM);sync();render()});
+myP.addEventListener('change',()=>{cY=+myP.value;sync();render()});
+document.getElementById('q-pick').addEventListener('change',()=>{cQ=+document.getElementById('q-pick').value;cM=qMs(cQ)[0];sync();render()});
+document.getElementById('qy-pick').addEventListener('change',()=>{cY=+document.getElementById('qy-pick').value;sync();render()});
+document.getElementById('y-pick').addEventListener('change',()=>{cY=+document.getElementById('y-pick').value;sync();render()});
+function shiftPeriod(d){if(mode==='month'){cM+=d;if(cM>12){cM=1;cY++}if(cM<1){cM=12;cY--}cQ=qOf(cM)}else if(mode==='quarter'){cQ+=d;if(cQ>4){cQ=1;cY++}if(cQ<1){cQ=4;cY--}cM=qMs(cQ)[0]}else cY+=d;sync();render()}
+function setToday(){cY=new Date().getFullYear();cM=new Date().getMonth()+1;cQ=qOf(cM);sync();render()}
+
+// STATE — Google Sheets + localStorage fallback
+// (APPS_SCRIPT_URL задається на початку файлу)
+let ST={};
+let syncStatus='local';
+try{const s=localStorage.getItem('fin_v3');if(s)ST=JSON.parse(s)}catch(e){}
+
+function saveLocal(){try{localStorage.setItem('fin_v3',JSON.stringify(ST))}catch(e){}}
+
+function sk(g,a,m){return cY+'-'+String(m).padStart(2,'0')+'|'+g+'|'+a}
+function gs(g,a,m){return ST[sk(g,a,m)]||{status:'pending',date:'',link:''}}
+function ss(g,a,f,v,m){
+  const k=sk(g,a,m);
+  if(!ST[k])ST[k]={status:'pending',date:'',link:''};
+  ST[k][f]=v;
+  saveLocal();
+  updateStats();
+  // Sync single to Google Sheets via GET with params
+  if(APPS_SCRIPT_URL){
+    setSyncBadge('syncing');
+    const p=new URLSearchParams({action:'set',key:k,status:ST[k].status,date:ST[k].date||'',link:ST[k].link||''});
+    fetch(APPS_SCRIPT_URL+'?'+p.toString())
+      .then(()=>setSyncBadge('synced')).catch(()=>setSyncBadge('error'));
+  }
+}
+
+function setSyncBadge(s){
+  syncStatus=s;
+  const el=document.getElementById('sync-badge');
+  if(!el)return;
+  const map={local:'🔸 Локально',syncing:'🔄 Синхронізація...',synced:'✅ Google Sheets',error:'❌ Помилка синхронізації'};
+  const cmap={local:'var(--yellow)',syncing:'var(--dim)',synced:'var(--green)',error:'var(--red)'};
+  el.textContent=map[s]||s;
+  el.style.color=cmap[s]||'var(--dim)';
+}
+
+// Load from Google Sheets on page load
+async function loadFromSheets(){
+  if(!APPS_SCRIPT_URL){setSyncBadge('local');return}
+  setSyncBadge('syncing');
+  try{
+    const r=await fetch(APPS_SCRIPT_URL);
+    const j=await r.json();
+    if(j.success&&j.data){
+      Object.entries(j.data).forEach(([k,v])=>{ST[k]=v});
+      saveLocal();
+      setSyncBadge('synced');
+      render();
+    }else{setSyncBadge('error')}
+  }catch(e){setSyncBadge('error');console.warn('Sheets sync failed:',e)}
+}
+
+// Full sync: push all local data to sheets row by row
+async function fullSync(){
+  if(!APPS_SCRIPT_URL){alert('Спочатку вставте APPS_SCRIPT_URL у код');return}
+  setSyncBadge('syncing');
+  const entries=Object.entries(ST);
+  if(entries.length===0){setSyncBadge('synced');return}
+  let ok=0;
+  for(const[k,v] of entries){
+    try{
+      const p=new URLSearchParams({action:'set',key:k,status:v.status||'pending',date:v.date||'',link:v.link||''});
+      await fetch(APPS_SCRIPT_URL+'?'+p.toString());
+      ok++;
+    }catch(e){}
+  }
+  setSyncBadge(ok>0?'synced':'error');
+}
+
+// GOALS
+const GOALS=[
+{id:'g1',num:'2.1',title:'Прозора фінансова аналітика',color:'#5a7a00',desc:'Готувати фінансові звіти (P&L, Cash Flow), робити аналітику для керівництва, показувати прибутковість напрямів, клієнтів, проєктів.',outputs:['Управлінню бізнесом → фінансові звіти, KPI, рекомендації','Управлінню розвитком → ROI-аналітика напрямів','Projecting / Production → висновки для маржинальності'],artifacts:[
+{name:'P&L ріпорт по групі',consumer:'Ops Mgmt, Dev Mgmt',deadline:'до 7-го р.д.',workday:7,freq:'monthly',deps:[{from:'AF',what:'Закриті P&L',when:'р.д. 3'}],folder:'pnl'},
+{name:'CashFlow по групі',consumer:'Ops Mgmt, Dev Mgmt',deadline:'до 7-го р.д.',workday:7,freq:'monthly',deps:[{from:'AF',what:'Виписки',when:'р.д. 2'}],folder:'cashflow'},
+{name:'Cost per hour',consumer:'Ops Mgmt, Dev Mgmt, Projecting',deadline:'до 10-го р.д.',workday:10,freq:'monthly',deps:[{from:'HR',what:'Ставки',when:'р.д. 5'},{from:'AF',what:'Експенси',when:'р.д. 5'}],folder:'cph'},
+{name:'Прибутковість проєкту (проєктна)',consumer:'Ops/Dev Mgmt, Production, Projecting',deadline:'до 5 р.д. після завершення',freq:'event',deps:[{from:'Projecting',what:'Фінальні дані',when:'2 дні після заверш.'}],folder:'plan_fact'},
+{name:'Прибутковість підписок',consumer:'Ops/Dev Mgmt, Production, Projecting',deadline:'до 12-го р.д.',workday:12,freq:'quarterly',deps:[{from:'Production',what:'Трудомісткість',when:'р.д. 8'}],folder:'subscriptions'},
+{name:'Рентабельність майбутніх проєктів',consumer:'Projecting, Sales',deadline:'за запитом',freq:'event',deps:[{from:'Projecting',what:'Скоуп',when:'при запиті'}],folder:'plan_fact'},
+{name:'Аналітика маркетингових кампаній',consumer:'Marketing',deadline:'ad hoc',freq:'event',deps:[{from:'Marketing',what:'Витрати та ліди',when:'при запиті'}],folder:'marketing'},
+{name:'Щомісячний фін. пакет',consumer:'Ops Mgmt, Dev Mgmt',deadline:'до 10-го р.д.',workday:10,freq:'monthly',deps:[{from:'Finance',what:'P&L, CF, план-факт',when:'р.д. 7–10'}],folder:'package'},
+{name:'ROI-аналітика напрямів',consumer:'Dev Mgmt',deadline:'до 15-го р.д.',workday:15,freq:'quarterly',deps:[{from:'Projecting',what:'Результати',when:'р.д. 10'}],folder:'roi'}]},
+{id:'g2',num:'2.2',title:'Прогнозоване фінансове становище',color:'#007088',desc:'Планувати та контролювати бюджет, прогнозувати доходи та витрати, аналізувати сценарії.',outputs:['Управлінню бізнесом → прогнози та сценарії','Sales / Marketing → фінансові межі й бюджети','Accounting → планові бюджети та цілі'],artifacts:[
+{name:'Річний бюджет',consumer:'Ops/Dev Mgmt, усі',deadline:'Грудень',freq:'annual',month:12,deps:[{from:'Усі функції',what:'Плани',when:'до 15 листопада'}],folder:'budget_annual'},
+{name:'Фінансові проєкції',consumer:'Ops Mgmt, Dev Mgmt',deadline:'до 10-го р.д.',workday:10,freq:'monthly',deps:[{from:'Sales',what:'Pipeline',when:'р.д. 5'}],folder:'projections'},
+{name:'Аналіз план-факт (компанія)',consumer:'Ops Mgmt, Dev Mgmt',deadline:'до 10-го р.д.',workday:10,freq:'monthly',deps:[{from:'AF',what:'Факт. витрати',when:'р.д. 5'}],folder:'plan_fact'},
+{name:'Бюджет проєктів',consumer:'Ops/Dev Mgmt, Production, Projecting',deadline:'при запуску проєкту',freq:'event',deps:[{from:'Projecting',what:'Scope',when:'до старту'}],folder:'budget_projects'},
+{name:'План-факт: проєктна робота',consumer:'Ops/Dev Mgmt, Production, Projecting',deadline:'по закінченню проєкту',freq:'event',deps:[{from:'Production',what:'Факт. години',when:'по заверш.'}],folder:'plan_fact'},
+{name:'План-факт: підписки',consumer:'Ops/Dev Mgmt, Production, Projecting',deadline:'до 12-го р.д.',workday:12,freq:'monthly',deps:[{from:'Production',what:'Факт',when:'р.д. 8'}],folder:'subscriptions'}]},
+{id:'g3',num:'2.3',title:'Раціональний розподіл ресурсів',color:'#7a00c4',desc:'Бюджетні ліміти по функціях, розподіл фінансів, контроль використання коштів.',outputs:['Управлінню бізнесом → бюджетні сценарії','Marketing & Projecting → затверджені бюджети','Production → фінансові та часові ліміти','HR → бюджети на оплату','Admin → бюджети на операційні витрати'],artifacts:[
+{name:'Річний бюджет по функціях',consumer:'Ops/Dev Mgmt, усі',deadline:'Грудень',freq:'annual',month:12,deps:[{from:'Усі функції',what:'Запити',when:'до 15 листопада'}],folder:'budget_functions'},
+{name:'План-факт використання бюджету',consumer:'Ops Mgmt, Dev Mgmt',deadline:'до 10-го р.д.',workday:10,freq:'monthly',deps:[{from:'AF',what:'Факт. витрати',when:'р.д. 5'}],folder:'plan_fact'},
+{name:'Затверджені бюджети проєктів',consumer:'Marketing, Projecting, Production',deadline:'при старті проєкту',freq:'event',deps:[{from:'Projecting',what:'Scope',when:'до старту'}],folder:'budget_projects'},
+{name:'Бюджетні сценарії',consumer:'Ops Mgmt, Dev Mgmt',deadline:'до 15-го р.д.',workday:15,freq:'quarterly',deps:[{from:'Dev Mgmt',what:'Плани розвитку',when:'р.д. 10'}],folder:'scenarios'}]},
+{id:'g4',num:'2.4',title:'Мінімізація фінансових ризиків',color:'#c43434',desc:'Моніторинг дебіторки та ліквідності, формування резервів, ранні попередження.',outputs:['Управлінню бізнесом → ризики та план дій','Accounting → резерви та правила','Sales → сигнали про ризикових клієнтів'],artifacts:[
+{name:'Стратегія управління фінансами (6/12 міс)',consumer:'Ops/Dev Mgmt (рада директорів)',deadline:'до 20-го р.д.',workday:20,freq:'semi',months:[1,7],deps:[{from:'AF',what:'Баланси рахунків',when:'р.д. 5'}],folder:'strategy'},
+{name:'Моніторинг дебіторки (DSO)',consumer:'Ops Mgmt, Sales',deadline:'щопонеділка',freq:'weekly',deps:[{from:'AF',what:'Статус оплат',when:'щоденно'}],folder:'dso'},
+{name:'Ранні попередження про ризики',consumer:'Ops/Dev Mgmt, Sales',deadline:'негайно',freq:'event',deps:[{from:'Production',what:'Статуси проєктів',when:'щотижнево'}],folder:'strategy'},
+{name:'Політика резервів та ліквідності',consumer:'Ops Mgmt, Dev Mgmt',deadline:'до 20-го р.д.',workday:20,freq:'semi',months:[1,7],deps:[{from:'AF',what:'Баланси',when:'р.д. 5'}],folder:'reserves'}]},
+{id:'g5',num:'2.5',title:'Ціноутворення та ставки',color:'#a0005a',isNew:true,desc:'Rate card логіка та забезпечення що ставки покривають fully-loaded costs.',outputs:['Sales → rate card, floor rates','Projecting → мінімальні ставки','Ops/Dev Mgmt → аналіз маржинальності'],artifacts:[
+{name:'Rate card (таблиця ставок)',consumer:'Sales, Projecting',deadline:'до 15-го р.д.',workday:15,freq:'quarterly',deps:[{from:'HR',what:'Ставки',when:'р.д. 5'},{from:'Finance',what:'Cost per hour',when:'р.д. 10'}],folder:'ratecard'},
+{name:'Аналіз цінової конкурентоспроможності',consumer:'Sales, Dev Mgmt',deadline:'до 20-го р.д.',workday:20,freq:'semi',months:[1,7],deps:[{from:'Sales',what:'Ринкові дані',when:'р.д. 10'}],folder:'pricing'},
+{name:'Floor rate (мінімальна маржа)',consumer:'Sales, Projecting',deadline:'до 10-го р.д.',workday:10,freq:'monthly',deps:[{from:'Finance',what:'Cost per hour',when:'р.д. 10'}],folder:'ratecard'},
+{name:'Сигнали про проєкти нижче порогу',consumer:'Sales, Ops Mgmt',deadline:'негайно',freq:'event',deps:[{from:'Projecting/Production',what:'Дані',when:'при виявленні'}],folder:'pricing'}]},
+{id:'g6',num:'2.6',title:'Управління дебіторкою',color:'#b07800',isNew:true,desc:'DSO < 45 днів. Ескалація: 0–15 — нагадування; 15–30 — Sales; 30–45 — призупинення; 45+ — Legal.',outputs:['Sales → сигнали, рекомендації','Ops Mgmt → призупинення робіт','Accounting → правила','Legal → стягнення'],artifacts:[
+{name:'Aging report (дебіторка)',consumer:'Ops Mgmt, Sales',deadline:'щопонеділка',freq:'weekly',deps:[{from:'AF',what:'Дані по оплатах',when:'щоденно'}],folder:'aging'},
+{name:'Ескалаційний протокол',consumer:'Sales, Ops Mgmt',deadline:'автоматично (>15 днів)',freq:'event',deps:[{from:'AF',what:'Реєстр прострочених',when:'авто'}],folder:'receivables'},
+{name:'DSO-звіт по клієнтах',consumer:'Ops/Dev Mgmt, Sales',deadline:'до 7-го р.д.',workday:7,freq:'monthly',deps:[{from:'AF',what:'Дані по оплатах',when:'р.д. 3'}],folder:'dso'},
+{name:'Рекомендації по умовах оплати',consumer:'Sales, Projecting',deadline:'при запиті',freq:'event',deps:[{from:'Sales',what:'Дані клієнта',when:'при запиті'}],folder:'receivables'}]}
+];
+
+// RENDER
+function artRow(a,idx,g,m){
+  const st=gs(g.id,idx,m);const isEv=a.freq==='event';const dl=deadlineText(a,cY,m);
+  const dH=a.deps.map(d=>'<div class="dep-chip"><span class="arr">←</span><strong>'+depText(d,cY,m)+'</strong></div>').join('');
+  const fUrl=GDF[a.folder]||'#';const show=st.status==='done'||st.date||st.link;
+  return '<tr'+(isEv?' style="opacity:0.5"':'')+'><td><div class="art-name">'+a.name+'</div><div style="margin-top:3px"><span class="tl-freq">'+FL[a.freq]+'</span>'+(isEv?' <span style="font-size:10px;color:var(--faint)">(не впливає на %)</span>':'')+'</div></td><td><span class="deadline">'+dl+'</span></td><td class="consumers">'+a.consumer+'</td><td><div class="dep-list">'+(dH||'<span style="color:var(--faint)">—</span>')+'</div></td><td class="status-cell"><select class="status-sel s-'+st.status+'" onchange="ss(\''+g.id+'\','+idx+',\'status\',this.value,'+m+');this.className=\'status-sel s-\'+this.value;render()"><option value="pending"'+(st.status==='pending'?' selected':'')+'>⏳ Очікує</option><option value="waiting"'+(st.status==='waiting'?' selected':'')+'>⏸ Чекає дані</option><option value="progress"'+(st.status==='progress'?' selected':'')+'>🔄 В роботі</option><option value="done"'+(st.status==='done'?' selected':'')+'>✅ Готово</option><option value="overdue"'+(st.status==='overdue'?' selected':'')+'>🔴 Прострочено</option></select><div class="done-fields" style="display:'+(show?'flex':'none')+'"><input type="date" value="'+st.date+'" onchange="ss(\''+g.id+'\','+idx+',\'date\',this.value,'+m+')"><div class="link-row"><input type="url" value="'+(st.link||'')+'" placeholder="Посилання на файл" onchange="ss(\''+g.id+'\','+idx+',\'link\',this.value,'+m+')"><a class="link-btn" href="'+(st.link||fUrl)+'" target="_blank">📂</a></div></div></td></tr>';
+}
+
+function gProg(g){let d=0,t=0;pMonths().forEach(m=>{g.artifacts.forEach((a,i)=>{if(!countsForPct(a)||!inMonth(a,m))return;t++;if(gs(g.id,i,m).status==='done')d++})});return{done:d,total:t}}
+
+function renderGoals(){
+  const pm=pMonths();
+  document.getElementById('goals-container').innerHTML=GOALS.map(g=>{
+    let rows='';
+    if(mode==='month'){rows=g.artifacts.filter(a=>inMonth(a,cM)).map(a=>artRow(a,g.artifacts.indexOf(a),g,cM)).join('')}
+    else{rows=pm.map(m=>{const arts=g.artifacts.filter(a=>inMonth(a,m));if(!arts.length)return '';return '<tr><td colspan="5" style="background:var(--warm);padding:5px 12px;font-family:JetBrains Mono,monospace;font-size:10px;font-weight:700;color:var(--accent);letter-spacing:1px">'+MUK[m]+' '+cY+'</td></tr>'+arts.map(a=>artRow(a,g.artifacts.indexOf(a),g,m)).join('')}).join('')}
+    const outH=g.outputs.map(o=>'<div class="goal-info-out-item"><span class="arr">→</span>'+o+'</div>').join('');
+    const{done,total}=gProg(g);const pct=total?Math.round(done/total*100):0;
+    return '<div class="goal-card" id="'+g.id+'"><div class="goal-hdr" onclick="this.parentElement.classList.toggle(\'open\')"><div class="goal-left"><span class="goal-badge" style="background:'+g.color+'10;color:'+g.color+';border:1px solid '+g.color+'30">'+g.num+'</span><div><span class="goal-title">'+g.title+'</span>'+(g.isNew?'<span class="new-tag">Нове</span>':'')+'</div></div><div class="goal-right"><div class="goal-pbar"><div class="goal-pfill" style="background:'+g.color+';width:'+pct+'%"></div></div><div class="goal-pct" style="color:'+g.color+'">'+(total?pct+'%':'—')+'</div><span class="goal-chev">▼</span></div></div><div class="goal-body"><div class="goal-info"><div class="goal-info-desc">'+g.desc+'</div><div class="goal-info-out"><div class="goal-info-out-title">Що передає іншим функціям</div>'+outH+'</div></div><table class="art-tbl"><thead><tr><th>Артефакт</th><th>Дедлайн</th><th>Споживачі</th><th>Залежності</th><th>Статус / Файл</th></tr></thead><tbody>'+(rows||'<tr><td colspan="5" style="text-align:center;color:var(--faint);padding:20px">Немає артефактів для цього періоду</td></tr>')+'</tbody></table></div></div>';
+  }).join('');
+}
+
+// STATS
+let expStat=null;
+function updateStats(){
+  const pm=pMonths();let all=[],done=[],prog=[],wait=[],over=[];
+  GOALS.forEach(g=>g.artifacts.forEach((a,i)=>{if(!countsForPct(a))return;pm.forEach(m=>{if(!inMonth(a,m))return;const s=gs(g.id,i,m);const it={name:a.name+(mode!=='month'?' ('+MUK[m].substring(0,3)+')':''),goal:g.num};all.push(it);if(s.status==='done')done.push(it);else if(s.status==='progress')prog.push(it);else if(s.status==='waiting')wait.push(it);else if(s.status==='overdue')over.push(it)})}));
+  const pN=all.length-done.length-prog.length-wait.length-over.length;
+  const cards=[{l:'Всього',n:all.length,c:'var(--text)',items:all,k:'all'},{l:'Готово',n:done.length,c:'var(--green)',items:done,k:'done'},{l:'В роботі',n:prog.length,c:'var(--yellow)',items:prog,k:'progress'},{l:'Чекає дані',n:wait.length,c:'var(--purple)',items:wait,k:'waiting'},{l:'Прострочено',n:over.length,c:'var(--red)',items:over,k:'overdue'},{l:'Очікує',n:pN,c:'var(--dim)',items:[],k:'pending'}];
+  document.getElementById('stats-row').innerHTML=cards.map(c=>{const isE=expStat===c.k;const iH=c.items.map(it=>'<div class="stat-expand-item"><span class="se-name">'+it.name+'</span><span class="se-goal">'+it.goal+'</span></div>').join('');return '<div class="stat-card'+(isE?' expanded':'')+'" onclick="toggleStat(\''+c.k+'\')"><div class="stat-num" style="color:'+c.c+'">'+c.n+'</div><div class="stat-label">'+c.l+'</div>'+(c.items.length?'<div class="stat-expand">'+iH+'</div>':'')+'</div>'}).join('');
+  const pct=all.length?Math.round(done.length/all.length*100):0;
+  document.getElementById('sb-fill').style.width=pct+'%';
+  document.getElementById('sb-ptxt').textContent=done.length+' / '+all.length+' ('+pct+'%)';
+}
+function toggleStat(k){expStat=expStat===k?null:k;updateStats()}
+
+// TIMELINE
+const TLE=[
+{day:1,w:true,who:'AF',cls:'tl-af',what:'Звірка банківських операцій',freq:'monthly'},
+{day:2,w:true,who:'HR',cls:'tl-hr',what:'Payroll data → Finance та AF',freq:'monthly'},
+{day:2,w:true,who:'AF',cls:'tl-af',what:'Банківські виписки → Finance',freq:'monthly'},
+{day:3,w:true,who:'AF',cls:'tl-af',what:'Закриті P&L US/UK/UA → Finance',freq:'monthly'},
+{day:5,w:true,who:'Sales',cls:'tl-sales',what:'Pipeline та прогноз контрактів',freq:'monthly'},
+{day:5,w:true,who:'Production',cls:'tl-prod',what:'Фактичні години по проєктах',freq:'monthly'},
+{day:5,w:true,who:'AF',cls:'tl-af',what:'Фактичні витрати по категоріях',freq:'monthly'},
+{day:7,w:true,who:'★ Finance',cls:'tl-finance',what:'P&L та CashFlow по групі',freq:'monthly',hl:1},
+{day:7,w:true,who:'★ Finance',cls:'tl-finance',what:'DSO-звіт по клієнтах',freq:'monthly',hl:1},
+{day:8,w:true,who:'Production',cls:'tl-prod',what:'Трудомісткість підписок',freq:'monthly'},
+{day:10,w:true,who:'★ Finance',cls:'tl-finance',what:'Cost per hour, проєкції, план-факт, floor rate',freq:'monthly',hl:1},
+{day:10,w:true,who:'★ Finance',cls:'tl-finance',what:'Щомісячний фін. пакет → Mgmt',freq:'monthly',hl:1},
+{day:0,w:false,who:'Finance',cls:'tl-finance',what:'Aging report та DSO-моніторинг',freq:'weekly'},
+{day:12,w:true,who:'★ Finance',cls:'tl-finance',what:'Прибутковість підписок',freq:'quarterly',hl:1},
+{day:15,w:true,who:'★ Finance',cls:'tl-finance',what:'Rate card, бюджетні сценарії, ROI',freq:'quarterly',hl:1},
+{day:20,w:true,who:'★ Finance',cls:'tl-finance',what:'Стратегія управління фінансами, резерви',freq:'semi',hl:1},
+{day:20,w:true,who:'★ Finance',cls:'tl-finance',what:'Аналіз цінової конкурентоспроможності',freq:'semi',hl:1},
+{day:0,w:false,who:'★ Finance',cls:'tl-finance',what:'Річний бюджет, бюджет по функціях',freq:'annual',hl:1,lbl:'Грудень '+cY},
+{day:0,w:false,who:'Усі',cls:'tl-all',what:'Плани та запити → Finance',freq:'annual',lbl:'15 листопада'}];
+
+let tlF='all';
+function renderTimeline(){
+  const fs=['all','monthly','weekly','quarterly','semi','annual'];const fL={all:'Усі',monthly:'Місяць',weekly:'Тиждень',quarterly:'Квартал',semi:'Піврічні',annual:'Рік'};
+  document.getElementById('tl-filters').innerHTML=fs.map(f=>'<button style="padding:5px 14px;border-radius:6px;border:1px solid '+(tlF===f?'var(--accent)':'var(--border)')+';background:'+(tlF===f?'rgba(201,255,51,.1)':'var(--white)')+';color:'+(tlF===f?'var(--accent)':'var(--dim)')+';font-size:12px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif" onclick="tlF=\''+f+'\';renderTimeline()">'+fL[f]+'</button>').join('');
+  const m=cM;const fil=TLE.filter(e=>{if(tlF!=='all'&&e.freq!==tlF)return false;if(e.freq==='quarterly'&&![3,6,9,12].includes(m))return false;if(e.freq==='semi'&&![1,7].includes(m))return false;if(e.freq==='annual'&&m!==12&&m!==11)return false;return true});
+  document.getElementById('tl-container').innerHTML=fil.length?'<table class="tl-table"><thead><tr><th>Дата</th><th>Хто</th><th>Що відбувається</th><th>Частота</th></tr></thead><tbody>'+fil.map(e=>{let ds=e.lbl||'';if(!ds&&e.w&&e.day){const d=wd(cY,cM,e.day);ds=d?fmt(cY,cM,d):e.day+'-й р.д.'}if(e.freq==='weekly'){ds=mondays(cY,cM).map(d=>fmt(cY,cM,d)).join(', ')}return '<tr'+(e.hl?' class="tl-highlight"':'')+'><td class="tl-day">'+ds+'</td><td><span class="tl-who '+e.cls+'">'+e.who+'</span></td><td>'+(e.hl?'<strong>'+e.what+'</strong>':e.what)+'</td><td><span class="tl-freq">'+FL[e.freq]+'</span></td></tr>'}).join('')+'</tbody></table>':'<div class="insight"><h3>Немає подій</h3><p>Для цього періоду немає подій.</p></div>';
+}
+
+// FUNCTIONS
+const FUNCS=[{name:'Accounting (AF)',dot:'#7a00c4',flows:[{dir:'in',t:'Закриті P&L, виписки, звірки (до 3-го р.д.)'},{dir:'in',t:'Статус оплат (щоденно)'},{dir:'in',t:'Фактичні витрати (до 5-го р.д.)'},{dir:'out',t:'Планові бюджети'},{dir:'out',t:'Резерви та правила'}]},{name:'Sales',dot:'#b07800',flows:[{dir:'in',t:'Pipeline (до 5-го р.д.)'},{dir:'in',t:'Дані клієнтів, ринкові дані'},{dir:'out',t:'Rate card, floor rates'},{dir:'out',t:'Бюджети та ліміти'},{dir:'out',t:'Сигнали про ризикових клієнтів'}]},{name:'Production',dot:'#007088',flows:[{dir:'in',t:'Фактичні години (до 5-го р.д.)'},{dir:'in',t:'Трудомісткість підписок (до 8-го р.д.)'},{dir:'in',t:'Статуси проєктів (щотижнево)'},{dir:'out',t:'Фінансові ліміти проєктів'},{dir:'out',t:'Висновки для маржинальності'}]},{name:'Projecting',dot:'#006699',flows:[{dir:'in',t:'Scope та оцінка ресурсів'},{dir:'in',t:'Прогнозовані результати'},{dir:'out',t:'Floor rates, бюджети'},{dir:'out',t:'Аналіз рентабельності'}]},{name:'Marketing',dot:'#a0005a',flows:[{dir:'in',t:'Витрати, ліди, конверсії'},{dir:'out',t:'Бюджети, ROI-аналітика'}]},{name:'HR',dot:'#c46000',flows:[{dir:'in',t:'Payroll, ставки, бонуси (до 3-го р.д.)'},{dir:'out',t:'Бюджети на оплату'}]},{name:'Admin',dot:'#666',flows:[{dir:'in',t:'Запити на операційні витрати'},{dir:'out',t:'Затверджені ліміти'}]},{name:'Ops / Dev Management',dot:'#333',flows:[{dir:'in',t:'Стратегічні пріоритети'},{dir:'out',t:'Щомісячний фін. пакет'},{dir:'out',t:'Бюджетні сценарії, ROI, ризики'}]}];
+function renderFuncs(){document.getElementById('func-grid').innerHTML=FUNCS.map(f=>{const fl=f.flows.map(x=>'<div class="func-flow"><span class="dir '+x.dir+'">'+(x.dir==='in'?'← IN':'→ OUT')+'</span>'+x.t+'</div>').join('');return '<div class="func-card"><div class="func-card-head"><div class="func-dot" style="background:'+f.dot+'"></div><h4>'+f.name+'</h4></div>'+fl+'</div>'}).join('')}
+
+document.querySelectorAll('.sb-item').forEach(it=>it.addEventListener('click',function(){document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));this.classList.add('active')}));
+
+function render(){renderGoals();updateStats();renderTimeline();sync()}
+renderFuncs();sync();render();
+loadFromSheets();
+</script>
 </body>
 </html>
